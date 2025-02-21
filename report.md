@@ -302,8 +302,7 @@ is a compound condition. Coverage.py counts the two operands separately (and the
 ## Overall Experience
 
 - **Main Take-aways:**  
-  
+The project how to analyze and improve code quality using branch coverage, it also improved our understanding and robustness of our implementation of unittesting and tools that can be used to measure complexity. We also gained experience of how important unittesting and a robust infrastructure can be when coding.
 - **Learning Outcomes:**  
- 
-- **Additional Comments:**  
+ Gained proficiency in unittesting tools and tools used to measure code complexity, such as: coverage.py, lizard.py, and pytest. We also gained proficiency in working in virtual environments and refactoring code for easier and more manageable functions.
 
