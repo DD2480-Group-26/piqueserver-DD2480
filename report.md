@@ -6,8 +6,8 @@ This report documents our project details, the onboarding experience, complexity
 
 ## Project
 
-**Name:** *[Your Project Name]*  
-**URL:** *[Your Project URL]*  
+**Name:** *piqueserver*  
+**URL:** *https://github.com/piqueserver/piqueserver*  
 
 **Description:**  
 A concise description of the project in one or two sentences that outlines its primary features and objectives.
@@ -38,21 +38,23 @@ The onboarding experience was not completely painless. The documentation is spli
 We analyzed several complex functions using both manual counts and the Lizard tool. Below is a summary of our findings:
 
 1. **Functions Selected for Analysis:**
-   - **Function 1:** `do_move` (lines 48-101 in `./piqueserver/core_commands/movement.py`)
-   - **Function 2:** `apply_script.join_squad` (lines 161-223 in `./piqueserver/scripts/squad.py`)
-   - **Function 3:** `apply_script.on_spawn` (lines 251-286 in `./piqueserver/scripts/squad.py`)
-   - **Function 4:**  `apply_script.on_chat` (lines 693-720 in `./piqueserver/scripts/markers.py`)
+   - `do_move` (lines 48-101 in `./piqueserver/core_commands/movement.py`)
+   - `join_squad` (lines 161-223 in `./piqueserver/scripts/squad.py`)
+   - `on_spawn` (lines 251-286 in `./piqueserver/scripts/squad.py`)
+   - `on_chat` (lines 693-720 in `./piqueserver/scripts/markers.py`)
 
 2. **Measurement Results:**
+For each of our chosen function we peer-review the Cyclomatic Complexity count two and two.
    - **Manual Count:**
-     - *First Function:* Adam counted 17,.
-     - *Second Function:* Love’s count was 20.
-     - *Third Function:* Both Filip and Robin counted 20.
-     - *Third Function:* Both Robin and Filip counted 15.
+     - *`do_move`:* Adam counted 17, Love counted 18
+     - *`join_squad`:* Love counted 20
+     - *`on_spawn`:* Both Filip and Robin counted 20.
+     - *`on_chat`:* Both Robin and Filip counted 15.
    - **Lizard (Cyclomatic) Complexity:**
-     - First function: **19**
-     - Second function: **20**
-     - Third function: **20**
+     - *`do_move`:* **19**
+     - *`join_squad`:* **20**
+     - *`on_spawn`:* **20**
+     - *`on_chat`:* **FILL HERE**
 
 3. **Observations:**
    - The tools vs. manual count did not get the same result for the functions. We have understood that it can differ a lot with how you implement the method of counting the cyclomatic complexity and even the formula varies between theories.
@@ -60,15 +62,16 @@ We analyzed several complex functions using both manual counts and the Lizard to
    - In our case, the complex functions are also long. Although there is a correlation between complexity and length, the function’s purpose ultimately guides its design.
 
 4. **Function Purposes:**
-   - **Function 1:** **`do_move`:** (lines 48-101 in `./piqueserver/core_commands/movement.py`)
-
+- **`do_move`:** (lines 48-101 in `./piqueserver/core_commands/movement.py`)
 Moves a character within a 3D game environment.
-   - **Function 2:** **`join_squad`:** (lines 161-223 in `./piqueserver/scripts/squad.py`)
+
+- **`join_squad`:** (lines 161-223 in `./piqueserver/scripts/squad.py`)
 The purpose of the functions is to manage the process of a player joining or leaving a squad. It has a number of different checks. It verifies that a player can join a squad, It determines whether the player is actually trying to change their current squad or follow preference. It also checks that there is space in the squad and if a player joins a squad, removes the player from an existing squad, if applicable. It also notifies the other player of the squad change. Since the function does a lot of things is 
-- **Function 3:** **`on_spawn`:** (lines 251-286 in `./piqueserver/scripts/squad.py`)
+
+- **`on_spawn`:** (lines 251-286 in `./piqueserver/scripts/squad.py`)
 The on_spawn function is a method that runs when a player spawns in the game. It seems one of its primary functions is handling squad-based spawning, ensuring that the player is near their squad members, and updating squad-related information like setting safe spawn locations.
 
-- **Function 4:** **`on_chat`:** (lines 693-720 in `./piqueserver/scripts/markers.py`)
+- **`on_chat`:** (lines 693-720 in `./piqueserver/scripts/markers.py`)
 The on_chat method runs whenever a player sends a chat message. The method handles chat messages and determines whether they should trigger the placement of markers in the game based on if the message contains the command for that action. The method also ensures that markers are placement respects cooldowns, and it calculates appropriate positions for the markers placed.
 
 
@@ -76,7 +79,8 @@ The on_chat method runs whenever a player sends a chat message. The method handl
    - Did it take into account exceptions? 
    The tools did 
 
-   - Is the documentation clear regarding possible outcomes: The second function does not have any documentation apart from small comments in the code which do not provide a significant amount of information.
+   - Is the documentation clear regarding possible outcomes: 
+   The functions we worked with does not have any documentation apart from small comments in the code which do not provide a significant amount of information. The comments in the code are also NOT up to PEP-8 standard and are often just comment what a single line of code does.
 
 
 ---
@@ -90,6 +94,18 @@ We plan to refactor the complex functions to reduce their cyclomatic complexity.
   Reducing complexity (and thus lowering the CC value) is expected to make the code easier to maintain. However, this might introduce other issues 
 
 - **Current Status:**  
+- **`do_move`:** (lines 48-101 in `./piqueserver/core_commands/movement.py`)
+WRITE REFACTORING PLAN HERE
+
+- **`join_squad`:** (lines 161-223 in `./piqueserver/scripts/squad.py`)
+WRITE REFACTORING PLAN HERE
+
+- **`on_spawn`:** (lines 251-286 in `./piqueserver/scripts/squad.py`)
+There are some parts of the `on_spawn` function which could be refactored and other which could be seperate to reduce complexity.
+You could, for example, create helper functions which for getting all the members of a squad or a helper function which returns all the living members of a squad. This would reduce code duplication for the function and therefore reduce the functions complexity in it whole.
+
+- **`on_chat`:** (lines 693-720 in `./piqueserver/scripts/markers.py`)
+WRITE REFACTORING PLAN HERE
 
 ---
 
@@ -120,20 +136,19 @@ We first employed the `coverage.py` tool to measure branch coverage across our c
 
 
 **Coverage Results (from `coverage.py`):**
-- **First Function:**
+- **`do_move`:**
   - Branches: **18**
   - Coverage before addings tests: **0%** since there were not tests for the function
   - Coverage after adding tests: **77.8%**
-- **Second Function:**
+- **`join_squad`:**
   - Branches: **24**
   - Coverage before addings tests: **0%** since there were not tests for the function
   - Coverage after adding tests: **79.2%**
-- **Third Function:**
+- **`on_spawn`:**
   - Branches: **16**
   - Coverage before addings tests: **0%** since there were not tests for the function
-  - Coverage after adding tests: **24%**
-
-- **Fourth function**
+  - Coverage after adding tests: **FILL HERE**
+- **`on_chat`:**
   - Branches:
   - Coverage before addings tests: 
   - Coverage after adding tests: 
@@ -147,19 +162,19 @@ We also developed a custom coverage tool that works as follows:
   A Python dictionary is used where branch IDs are keys set to `False` initially. When a branch is executed by the tests, its corresponding value is set to `True`. After test execution, the tool returns the dictionary, indicating which branches were covered. Our tool supports......
 
 - **Results from Our Tool:**
-  - **First Function (`do_move`):** (lines 48-101 in `./piqueserver/core_commands/movement.py`)
-
+  - **(`do_move`):** (lines 48-101 in `./piqueserver/core_commands/movement.py`)
     - Branches: **13**
     -  Coverage after adding tests:: 10 out of 13 (~77%)
-  - **Second Function (`join_squad`):** (lines 161-223 in `./piqueserver/scripts/squad.py`)
+
+  - **(`join_squad`):** (lines 161-223 in `./piqueserver/scripts/squad.py`)
     - Branches: **16**
     -  Coverage after adding tests:: 13 out of 16 (~81%)
 
-  - **Third function (`on_spawn`):** (lines 251-286 in `./piqueserver/scripts/squad.py`)
+  - **(`on_spawn`):** (lines 251-286 in `./piqueserver/scripts/squad.py`)
     - Branches: **12**
-    - Coverage after adding tests:: 8 out of 12 (66%)
+    - Coverage after adding tests:: 8 out of 12 (~66%)
 
-  - **Fourth Function (`on_chat`):** (lines 693-720 in `./piqueserver/scripts/markers.py`)
+  - **(`on_chat`):** (lines 693-720 in `./piqueserver/scripts/markers.py`)
     - Branches: 
     - Coverage after adding tests::
 
