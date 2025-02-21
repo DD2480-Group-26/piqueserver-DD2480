@@ -265,13 +265,12 @@ We also developed a custom coverage tool that works as follows:
 ### Evaluation
 
 1. **Detail Level:**  
-   Since we have inserted the “branch counters” in each branch of the functions the measurement is reasonably detailed.
+   Since we have inserted the “branch counters” in each branch of the functions the measurement is reasonably detailed. 
 2. **Limitations:**  
    The limitation of our tool is that it is not dynamic. It must be done manually for each of the functions that you want to measure the coverage.
 3. **Consistency:**  
-   The results for the second function differ between our tool and `coverage.py`. It is not consistent because Coverage.py counts every possible branch in the bytecode, including both outcomes of each condition and each sub-condition in compound expressions. In our manual instrumentation do we only consider branching due to if-statements and while-loops. Coverage does also handle  Another thing is that our tool does not capture implicit branches. An expression like:
-    `if self.team is None or self.team is self.protocol.spectator_team:`
-is a compound condition. Coverage.py counts the two operands separately (and the implicit false outcome), so it can add more branches than you have instrumentation markers.
+  The results are not perfectly consistent with existing coverage tools. It is not consistent because Coverage.py counts every possible branch in the bytecode, including both outcomes of each condition and each sub-condition in compound expressions. In our manual instrumentation do we only consider branching due to if-statements and while-loops.
+Another thing is that our tool does not fully capture implicit branches which is a weakness.
 
 
 ---
