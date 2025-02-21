@@ -2,9 +2,9 @@ import unittest
 from unittest.mock import MagicMock, patch
 import random
 
-from piqueserver.scripts.squad import apply_script
+from piqueserver.scripts.squad import apply_script, return_coverage_on_spawn
 
-# dummy classes to simulate protocol, connection, and players
+# Dummy classes to simulate protocol, connection, and players
 
 class DummyConnection:
     def on_spawn(self, pos):
@@ -17,7 +17,6 @@ class DummyConnection:
         return "chat_called"
 
 class DummyProtocol:
-    # dummy protocol with a dict of players
     def __init__(self):
         self.players = {}  
         self.respawn_time = 0
@@ -53,7 +52,11 @@ class DummyPlayer:
 
 class TestOnSpawn(unittest.TestCase):
     def setUp(self):
-        # Set up a dummy protocol and connection.
+        # Reset branch coverage dictionary before each test.
+        from piqueserver.scripts.squad import branch_coverage_on_spawn
+        for key in branch_coverage_on_spawn:
+            branch_coverage_on_spawn[key] = False
+
         self.protocol = DummyProtocol()
         self.connection = DummyConnection()
         # apply_script returns (protocol, SquadConnectionClass)
@@ -70,10 +73,13 @@ class TestOnSpawn(unittest.TestCase):
         # Override get_follow_location to simply return the player's position.
         self.instance.get_follow_location = lambda player: player.world_object.position.get()
 
+    def tearDown(self):
+        # Print branch coverage for on_spawn after each test.
+        from piqueserver.scripts.squad import branch_coverage_on_spawn
+        print("Branch coverage for on_spawn:", branch_coverage_on_spawn)
+
     def test_no_squad(self):
-        """
-        If self.squad is None, on_spawn should not send any chat or change location.
-        """
+        """If self.squad is None, on_spawn should not send any chat or change location."""
         self.instance.squad = None
         self.instance.squad_pref = None
         result = self.instance.on_spawn((0, 0, 0))
@@ -88,7 +94,7 @@ class TestOnSpawn(unittest.TestCase):
         """
         self.instance.squad = "Alpha"
         self.instance.squad_pref = None
-        # Ensure get_squad returns an empty list by not populating protocol.players.
+        # Do not populate protocol.players so that get_squad returns an empty list.
         result = self.instance.on_spawn((0, 0, 0))
         self.assertEqual(result, "base_spawn")
         self.instance.send_chat.assert_called_with("You are in squad Alpha, all alone.")
@@ -108,10 +114,8 @@ class TestOnSpawn(unittest.TestCase):
         self.protocol.players["mate"] = mate
         result = self.instance.on_spawn((0, 0, 0))
         self.assertEqual(result, "base_spawn")
-        # Expected chat: both 'leader' and 'mate' appear.
         expected_msg = "You are in squad Bravo with leader (100 hp) and mate (100 hp)."
         self.instance.send_chat.assert_called_with(expected_msg)
-        # set_location_safe should use the squad_pref's location.
         self.instance.set_location_safe.assert_called_with((5, 5, 5))
 
     def test_live_member(self):
@@ -123,7 +127,6 @@ class TestOnSpawn(unittest.TestCase):
         self.instance.squad_pref = None
         live_member = DummyPlayer("live", 100, "red", squad="Charlie", pos=(7, 7, 7))
         self.protocol.players["live"] = live_member
-        # Expected chat message with one member.
         expected_msg = "You are in squad Charlie with live (100 hp)."
         with patch("random.choice", return_value=live_member):
             result = self.instance.on_spawn((0, 0, 0))
@@ -154,24 +157,26 @@ class TestOnSpawn(unittest.TestCase):
         """
         self.instance.squad = "Echo"
         self.instance.squad_pref = None
-        # Create three squad members:
         p1 = DummyPlayer("p1", 100, "red", squad="Echo", pos=(1, 1, 1))
         p2 = DummyPlayer("p2", 0, "red", squad="Echo", pos=(2, 2, 2))   # Dead
         p3 = DummyPlayer("p3", 50, "red", squad="Echo", pos=(3, 3, 3))
         self.protocol.players["p1"] = p1
         self.protocol.players["p2"] = p2
         self.protocol.players["p3"] = p3
-        # Expected message is constructed as follows:
-        # p1 (first): "p1 (100 hp)"
-        # p2 (middle): ", p2 (DEAD)"
-        # p3 (last): " and p3 (50 hp)"
         expected_msg = "You are in squad Echo with p1 (100 hp), p2 (DEAD) and p3 (50 hp)."
-        # live_members will be [p1, p3] since p2 is dead.
         with patch("random.choice", return_value=p1):
             result = self.instance.on_spawn((0, 0, 0))
             self.assertEqual(result, "base_spawn")
             self.instance.send_chat.assert_called_with(expected_msg)
             self.instance.set_location_safe.assert_called_with((1, 1, 1))
+
+# A separate test to print the branch coverage dictionary.
+class TestBranchCoverageOnSpawn(unittest.TestCase):
+    def test_print_branch_coverage(self):
+        coverage = return_coverage_on_spawn()
+        print("Branch coverage for on_spawn:", coverage)
+        # Optionally assert that at least one branch was hit:
+        # self.assertTrue(any(coverage.values()))
 
 if __name__ == "__main__":
     unittest.main()

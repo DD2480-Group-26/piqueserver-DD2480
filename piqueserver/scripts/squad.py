@@ -93,10 +93,8 @@ def squad(self, squadkey=None):
     return self.join_squad(squad, squad_pref)
 
 
-
-# 
-# 
-#  Function for 
+ 
+# dict for branch coverage testing 
 
 branch_hits_squad = {
     1 : False,
@@ -115,9 +113,24 @@ branch_hits_squad = {
     14: False,
     15: False, 
     16: False
-
-
 }
+branch_coverage_on_spawn = {
+    1: False,  
+    2: False,  
+    3: False,  
+    4: False, 
+    5: False,  
+    6: False,  
+    7: False, 
+    8: False,  
+    9: False, 
+    10: False,
+    11: False,
+    12: False, 
+}
+
+def return_coverage_on_spawn():
+    return branch_coverage_on_spawn
 
 
 def apply_script(protocol, connection, config):
@@ -304,7 +317,10 @@ def apply_script(protocol, connection, config):
             return connection.on_team_changed(self, old_team)
 
         def on_spawn(self, pos):
-            if self.squad:
+            if not self.squad:
+                branch_coverage_on_spawn[1] = True
+            else:
+                branch_coverage_on_spawn[2] = True
                 all_members = ([n for n in self.get_squad(
                     self.team, self.squad)['players'] if n is not self])
                 live_members = [
@@ -314,31 +330,42 @@ def apply_script(protocol, connection, config):
                 for n in range(len(all_members)):
                     name = membernames[n]
                     if not all_members[n].hp:
+                        branch_coverage_on_spawn[3] = True
                         name += " (DEAD)"
                     else:
+                        branch_coverage_on_spawn[4] = True
                         name += " (%s hp)" % all_members[n].hp
                     if n == 0:
+                        branch_coverage_on_spawn[5] = True
                         memberstr += "%s" % name
                     elif n == len(membernames) - 1:
+                        branch_coverage_on_spawn[6] = True
                         memberstr += " and %s" % name
                     else:
+                        branch_coverage_on_spawn[7] = True
                         memberstr += ", %s" % name
                 if len(all_members) > 0:
+                    branch_coverage_on_spawn[8] = True
                     self.send_chat('You are in squad %s with %s.' %
                                    (self.squad, memberstr))
                 else:
+                    branch_coverage_on_spawn[9] = True
                     self.send_chat('You are in squad %s, all alone.' %
                                    self.squad)
                 if (self.squad_pref is not None and self.squad_pref.hp and
-                    self.squad_pref.team is self.team and not self.squad_pref.invisible
-                        and not self.squad_pref.god):
+                    self.squad_pref.team is self.team and not self.squad_pref.invisible and not self.squad_pref.god):
+                    branch_coverage_on_spawn[10] = True
                     self.set_location_safe(self.get_follow_location(
                         self.squad_pref))
                 else:
                     if len(live_members) > 0:
+                        branch_coverage_on_spawn[11] = True
                         self.set_location_safe(self.get_follow_location(
                             random.choice(live_members)))
+                    else:
+                        branch_coverage_on_spawn[12] = True
             return connection.on_spawn(self, pos)
+
 
         def on_kill(self, killer, type, grenade):
             if killer is None or killer is self:
