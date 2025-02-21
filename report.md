@@ -285,7 +285,7 @@ is a compound condition. Coverage.py counts the two operands separately (and the
   - [Old Coverage Report](link)
   - [New Coverage Report](https://dd2480-group-26.github.io/coverage-pages/branch_coverage_report.html)
   - [Manual Coverage Report](https://dd2480-group-26.github.io/coverage-pages/branch_coverage_tool_tests.html)
-  - The functions in the Manual Coverage Report are: `do_move`, `apply_script.MarkerConnection.on_chat`, `apply_script.SquadConnection.join_squad`, and `apply_script.SquadConnection.on_spawn`.		 
+  - The functions in the Manual Coverage Report which we added our manual tests to are: `do_move`, `apply_script.MarkerConnection.on_chat`, `apply_script.SquadConnection.join_squad`, and `apply_script.SquadConnection.on_spawn`.		 
 - **Test Cases Added:**  
   - Command used to view the patch: `git diff main..converage-tests`  
 
