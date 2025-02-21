@@ -62,6 +62,9 @@ pyspades/world.cpp
 # coverage
 .coverage
 htmlcov
+coverage.json
+coverage.xml
+
 
 # IDEs and text editors
 .vscode
