@@ -91,7 +91,10 @@ The on_chat method runs whenever a player sends a chat message. The method handl
 
 5. **Exceptions and Documentation:**  
    - Did it take into account exceptions? 
-   The manual coverage measurement tool we implemented relies on the user to add code to all the branches of the function so in a way it takes operations like ternary operators into account but it still relies on the user to add the needed code inside of the condition.
+  Exceptions are taken into account using our own tool as “s” in the formula stated above.
+The parser for the lizard tool for python does look for  'if', 'for', 'while', 'and', 'or',
+'elif', 'except', 'finally' so it probably handles exceptions, but it is not explcitly stated in the documentation. 
+
 
    - Is the documentation clear regarding possible outcomes: 
    The functions we worked with does not have any documentation apart from small comments in the code which do not provide a significant amount of information. The comments in the code are also NOT up to PEP-8 standard and are often just comment what a single line of code does.
