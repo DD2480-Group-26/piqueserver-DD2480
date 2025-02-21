@@ -48,6 +48,7 @@ We analyzed several complex functions using both manual counts and the Lizard to
      - *First Function:* Adam counted 17,.
      - *Second Function:* Love’s count was 20.
      - *Third Function:* Both Filip and Robin counted 20.
+     - *Third Function:* Both Robin and Filip counted 15.
    - **Lizard (Cyclomatic) Complexity:**
      - First function: **19**
      - Second function: **20**
@@ -127,9 +128,9 @@ We first employed the `coverage.py` tool to measure branch coverage across our c
   - Coverage before addings tests: **0%** since there were not tests for the function
   - Coverage after adding tests: **79.2%**
 - **Third Function:**
-  - Branches: **12**
+  - Branches: **16**
   - Coverage before addings tests: **0%** since there were not tests for the function
-  - Coverage after adding tests: **94%**
+  - Coverage after adding tests: **24%**
 
 - **Fourth function**
   - Branches:
