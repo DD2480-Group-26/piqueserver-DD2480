@@ -38,10 +38,10 @@ The onboarding experience was not completely painless. The documentation is spli
 We analyzed several complex functions using both manual counts and the Lizard tool. Below is a summary of our findings:
 
 1. **Functions Selected for Analysis:**
-   - **Function 1:** `do_move` (lines 48-101 in `./core_commands/movement.py`)
-   - **Function 2:** `apply_script.join_squad` (lines 161-223 in `./piqueserver/piqueserver/scripts/squad.py`)
+   - **Function 1:** `do_move` (lines 48-101 in `./piqueserver/core_commands/movement.py`)
+   - **Function 2:** `apply_script.join_squad` (lines 161-223 in `./piqueserver/scripts/squad.py`)
    - **Function 3:** `apply_script.on_spawn` (lines 251-286 in `./piqueserver/scripts/squad.py`)
-   - **Function 4:**  `apply_script.on_chat` (lines 693-720 in `./scripts/markers.py`)
+   - **Function 4:**  `apply_script.on_chat` (lines 693-720 in `./piqueserver/scripts/markers.py`)
 
 2. **Measurement Results:**
    - **Manual Count:**
@@ -60,14 +60,15 @@ We analyzed several complex functions using both manual counts and the Lizard to
    - In our case, the complex functions are also long. Although there is a correlation between complexity and length, the function’s purpose ultimately guides its design.
 
 4. **Function Purposes:**
-   - **`do_move`:**  
-     Moves a character within a 3D game environment.
-   - **`join_squad`:**  
+   - **Function 1:** **`do_move`:** (lines 48-101 in `./piqueserver/core_commands/movement.py`)
+
+Moves a character within a 3D game environment.
+   - **Function 2:** **`join_squad`:** (lines 161-223 in `./piqueserver/scripts/squad.py`)
 The purpose of the functions is to manage the process of a player joining or leaving a squad. It has a number of different checks. It verifies that a player can join a squad, It determines whether the player is actually trying to change their current squad or follow preference. It also checks that there is space in the squad and if a player joins a squad, removes the player from an existing squad, if applicable. It also notifies the other player of the squad change. Since the function does a lot of things is 
-   - **`on_spawn`:**  
+- **Function 3:** **`on_spawn`:** (lines 251-286 in `./piqueserver/scripts/squad.py`)
 The on_spawn function is a method that runs when a player spawns in the game. It seems one of its primary functions is handling squad-based spawning, ensuring that the player is near their squad members, and updating squad-related information like setting safe spawn locations.
 
-- **`on_chat`:**
+- **Function 4:** **`on_chat`:** (lines 693-720 in `./piqueserver/scripts/markers.py`)
 The on_chat method runs whenever a player sends a chat message. The method handles chat messages and determines whether they should trigger the placement of markers in the game based on if the message contains the command for that action. The method also ensures that markers are placement respects cooldowns, and it calculates appropriate positions for the markers placed.
 
 
@@ -82,7 +83,7 @@ The on_chat method runs whenever a player sends a chat message. The method handl
 
 ## Refactoring
 
-**Plan for Refactoring:**  
+**Plan for Refactoring:**
 We plan to refactor the complex functions to reduce their cyclomatic complexity. The aim is to improve maintainability while being mindful of any potential drawbacks, such as performance trade-offs.
 
 - **Estimated Impact:**  
@@ -146,18 +147,19 @@ We also developed a custom coverage tool that works as follows:
   A Python dictionary is used where branch IDs are keys set to `False` initially. When a branch is executed by the tests, its corresponding value is set to `True`. After test execution, the tool returns the dictionary, indicating which branches were covered. Our tool supports......
 
 - **Results from Our Tool:**
-  - **First Function (`do_move`):**
+  - **First Function (`do_move`):** (lines 48-101 in `./piqueserver/core_commands/movement.py`)
+
     - Branches: **13**
     -  Coverage after adding tests:: 10 out of 13 (~77%)
-  - **Second Function:**
+  - **Second Function (`join_squad`):** (lines 161-223 in `./piqueserver/scripts/squad.py`)
     - Branches: **16**
     -  Coverage after adding tests:: 13 out of 16 (~81%)
 
-  - **Third function (`on_spawn`):**
+  - **Third function (`on_spawn`):** (lines 251-286 in `./piqueserver/scripts/squad.py`)
     - Branches: **12**
     - Coverage after adding tests:: 8 out of 12 (66%)
 
-  - **Fourth Function:**
+  - **Fourth Function (`on_chat`):** (lines 693-720 in `./piqueserver/scripts/markers.py`)
     - Branches: 
     - Coverage after adding tests::
 
