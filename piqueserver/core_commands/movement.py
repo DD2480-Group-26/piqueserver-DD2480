@@ -2,6 +2,22 @@ from pyspades.common import (coordinates, to_coordinates)
 from piqueserver.commands import (command, CommandError, get_player,
                                   PermissionDenied, player_only, target_player)
 
+branch_coverage = {
+    1: False,
+    2: False,
+    3: False,
+    4: False,
+    5: False,
+    6: False,
+    7: False,
+    8: False,
+    9: False,
+    10: False,
+    11: False,
+    12: False,
+    13: False
+}
+
 
 @command(admin_only=True)
 @target_player
@@ -44,16 +60,21 @@ def move(connection, *args):
     """
     do_move(connection, args)
 
-
 def do_move(connection, args, silent=False):
     position = None
     player = None
     arg_count = len(args)
 
-    initial_index = 1 if arg_count == 2 or arg_count == 4 else 0
+    if arg_count == 2 or arg_count == 4:
+        branch_coverage[1] = True
+        initial_index = 1
+    else:
+        branch_coverage[2] = True
+        initial_index = 0
 
     # the target position is a <sector>
     if arg_count == 1 or arg_count == 2:
+        branch_coverage[3] = True
         x, y = coordinates(args[initial_index])
         x += 32
         y += 32
@@ -61,23 +82,29 @@ def do_move(connection, args, silent=False):
         position = args[initial_index].upper()
     # the target position is <x> <y> <z>
     elif arg_count == 3 or arg_count == 4:
+        branch_coverage[4] = True
         x = min(max(0, int(args[initial_index])), 511)
         y = min(max(0, int(args[initial_index + 1])), 511)
         z = min(max(0, int(args[initial_index + 2])),
                 connection.protocol.map.get_height(x, y) - 2)
         position = '%d %d %d' % (x, y, z)
     else:
+        branch_coverage[5] = True
         raise ValueError('Wrong number of parameters!')
 
     # no player specified
     if arg_count == 1 or arg_count == 3:
+        branch_coverage[6] = True
         # must be run by a player in this case because moving self
         if connection not in connection.protocol.players.values():
+            branch_coverage[7] = True
             raise ValueError("Both player and target player are required")
         player = connection.name
     # player specified
     elif arg_count == 2 or arg_count == 4:
+        branch_coverage[8] = True
         if not (connection.admin or connection.rights.move_others):
+            branch_coverage[9] = True
             raise PermissionDenied(
                 "moving other players requires the move_others right")
         player = args[0]
@@ -88,18 +115,24 @@ def do_move(connection, args, silent=False):
 
     player.set_location((x, y, z))
     if connection is player:
+        branch_coverage[10] = True
         message = ('%s ' + ('silently ' if silent else '') + 'teleported to '
                    'location %s')
         message = message % (player.name, position)
     else:
+        branch_coverage[11] = True
         message = ('%s ' + ('silently ' if silent else '') + 'teleported %s '
                    'to location %s')
         message = message % (connection.name, player.name, position)
     if silent:
+        branch_coverage[12] = True
         connection.protocol.irc_say('* ' + message)
     else:
+        branch_coverage[13] = True
         connection.protocol.broadcast_chat(message, irc=True)
 
+def return_coverage():
+    return branch_coverage
 
 @command(admin_only=True)
 @target_player
