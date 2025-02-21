@@ -163,9 +163,9 @@ We also developed a custom coverage tool that works as follows:
   - **Third function:**
     - Branches: 
     - Coverage after adding tests:: 
-  - **Second Function:**
-    - Branches: **16**
-    - Coverage after adding tests:: 13 out of 16 (~81%)
+  - **Third Function:**
+    - Branches:
+    - Coverage after adding tests:
 
 
 ### Evaluation
