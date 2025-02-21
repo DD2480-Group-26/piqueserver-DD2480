@@ -1,5 +1,14 @@
 import unittest
-from piqueserver.scripts.markers import apply_script
+from unittest.mock import MagicMock
+from piqueserver.scripts.markers import apply_script, return_coverage_on_chat
+
+# Dummy classes required for setUp and tests.
+class DummyProtocol:
+    def __init__(self):
+        self.allow_markers = True
+
+class DummyConnection:
+    pass
 
 class DummyMarker:
     always_there = False
@@ -15,6 +24,7 @@ class DummyAlwaysThereMarker:
     def is_triggered(chat):
         return "always" in chat
 
+# Fake handler used for testing on_chat functionality.
 class FakeHandler:
     def __init__(self):
         self.allow_markers = True
@@ -39,47 +49,78 @@ class FakeHandler:
 
 class TestChat(unittest.TestCase):
 
-    def test_no_marker_trigger(self, bound_on_chat):
+    def setUp(self):
+        # Reset branch coverage dictionary for on_chat before each test.
+        from piqueserver.scripts.markers import branch_coverage_on_chat
+        for key in branch_coverage_on_chat:
+            branch_coverage_on_chat[key] = False
+
+        # Create dummy protocol/connection objects.
+        self.protocol = DummyProtocol()
+        self.connection = DummyConnection()
+        # apply_script returns (protocol, SquadConnectionClass)
+        proto, SquadConnection = apply_script(self.protocol, DummyConnection, {})
+        self.SquadConnection = SquadConnection
+        # Create an instance of SquadConnection and assign required attributes.
+        self.instance = self.SquadConnection()
+        self.instance.protocol = self.protocol
+        self.instance.team = "red"
+        self.instance.name = "tester"
+        # Replace methods with mocks to track calls.
+        self.instance.send_chat = MagicMock()
+        self.instance.set_location_safe = MagicMock()
+        # Override get_follow_location to simply return the player's position.
+        self.instance.get_follow_location = lambda player: player.world_object.position.get()
+
+    def test_no_marker_trigger(self):
         handler = FakeHandler()
         result = apply_script.on_chat("hello", False)
-        assert handler.sent_messages == []
-        assert handler.marker_made is None
-        assert result == "on_chat_result"
+        self.assertEqual(handler.sent_messages, [])
+        self.assertIsNone(handler.marker_made)
+        self.assertEqual(result, "on_chat_result")
 
-    def test_global_message_marker(self, bound_on_chat):
+    def test_global_message_marker(self):
         handler = FakeHandler()
         result = apply_script.on_chat("test", True)
-        assert "TeamChat" in handler.sent_messages
-        assert handler.marker_made is None
-        assert result == "on_chat_result"
+        self.assertIn("TeamChat", handler.sent_messages)
+        self.assertIsNone(handler.marker_made)
+        self.assertEqual(result, "on_chat_result")
 
-    def test_cooldown_marker(self, bound_on_chat):
+    def test_cooldown_marker(self):
         handler = FakeHandler()
         result = apply_script.on_chat("test", False)
-        assert "Wait" in handler.sent_messages
-        assert handler.marker_made is None
-        assert result == "on_chat_result"
+        self.assertIn("Wait", handler.sent_messages)
+        self.assertIsNone(handler.marker_made)
+        self.assertEqual(result, "on_chat_result")
 
-    def test_always_there_fail(self, bound_on_chat):
+    def test_always_there_fail(self):
         handler = FakeHandler()
         handler.last_marker = None
         handler.there_location = None
         result = apply_script.on_chat("always", False)
-        assert "Fail" in handler.sent_messages
-        assert handler.marker_made is None
-        assert result == "on_chat_result"
+        self.assertIn("Fail", handler.sent_messages)
+        self.assertIsNone(handler.marker_made)
+        self.assertEqual(result, "on_chat_result")
 
-    def test_get_location_marker_team0(self, bound_on_chat):
+    def test_get_location_marker_team0(self):
         handler = FakeHandler()
         handler.last_marker = None
         result = apply_script.on_chat("test", False)
-        assert handler.marker_made == (DummyMarker, (16, 20))
-        assert result == "on_chat_result"
+        self.assertEqual(handler.marker_made, (DummyMarker, (16, 20)))
+        self.assertEqual(result, "on_chat_result")
 
-    def test_get_location_marker_team1(self, bound_on_chat):
+    def test_get_location_marker_team1(self):
         handler = FakeHandler()
         handler.team.id = 1
         handler.last_marker = None
         result = apply_script.on_chat("test", False)
-        assert handler.marker_made == (DummyMarker, (4, 20))
-        assert result == "on_chat_result"
+        self.assertEqual(handler.marker_made, (DummyMarker, (4, 20)))
+        self.assertEqual(result, "on_chat_result")
+
+class TestBranchCoverageOnChat(unittest.TestCase):
+    def test_print_branch_coverage(self):
+        coverage = return_coverage_on_chat()
+        print("Branch coverage for on_chat: ", coverage)
+
+if __name__ == "__main__":
+    unittest.main()

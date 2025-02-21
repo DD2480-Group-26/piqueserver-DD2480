@@ -71,6 +71,21 @@ VV_TIMEFRAME = 0.5
 THERE_RAY_LENGTH = 192.0
 ENEMY_EXPIRE_DISTANCE_SQUARED = 18.0 ** 2
 
+branch_hits_chat = {
+    1 : False,
+    2 : False,
+    3 : False,
+    4 : False,
+    5 : False, 
+    6 : False,
+    7: False, 
+    8: False, 
+    9: False
+}
+
+def return_coverage_on_chat():
+    return branch_hits_chat
+
 
 @command(admin_only=True)
 @player_only
@@ -693,6 +708,7 @@ def apply_script(protocol, connection, config):
         def on_chat(self, value, global_message):
             markers_allowed = self.allow_markers and self.protocol.allow_markers
             if CHAT_MARKERS and markers_allowed and not self.team.spectator:
+                branch_hits_chat[1] = True
                 chat = value.lower()
                 try:
                     marker_class = next(cls for cls in trigger_markers if
@@ -700,22 +716,30 @@ def apply_script(protocol, connection, config):
                 except StopIteration:
                     pass
                 else:
+                    branch_hits_chat[2] = True
                     if global_message:
+                        branch_hits_chat[3] = True
                         self.send_chat(S_TEAMCHAT)
                     elif (self.last_marker is not None and
                           seconds() - self.last_marker <= COOLDOWN):
+                        branch_hits_chat[4] = True
                         self.send_chat(S_WAIT)
                     else:
+                        branch_hits_chat[5] = True
                         location = None
                         if marker_class.always_there or 'there' in chat:
+                            branch_hits_chat[6] = True
                             location = self.get_there_location()
                             if location is None:
+                                branch_hits_chat[7] = True
                                 self.send_chat(S_FAIL)
                         else:
+                            branch_hits_chat[8] = True
                             x, y, z = self.get_location()
                             location = (x + 6 if self.team.id ==
                                         0 else x - 6, y)
                         if location:
+                            branch_hits_chat[9] = True
                             self.make_marker(marker_class, location)
             return connection.on_chat(self, value, global_message)
 
