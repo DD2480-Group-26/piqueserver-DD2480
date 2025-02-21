@@ -109,8 +109,41 @@ We plan to refactor the complex functions to reduce their cyclomatic complexity.
 
 **Current Status:**  
 - **`do_move`:** (lines 48-101 in `./piqueserver/core_commands/movement.py`)
-WRITE REFACTORING PLAN HERE
-
+The function can be improved in a number of ways. In the function is there a significant amount of code for parsing the position. This can be moved to function like this 
+```python
+def _parse_target_position(connection, args, arg_count, initial_index):
+    if arg_count in (1, 2):
+        # The target is specified as a <sector>.
+        x, y = coordinates(args[initial_index])
+        x += 32
+        y += 32
+        z = connection.protocol.map.get_height(x, y) - 2
+        position = args[initial_index].upper()
+    elif arg_count in (3, 4):
+        # The target is specified as <x> <y> <z>.
+        x = min(max(0, int(args[initial_index])), 511)
+        y = min(max(0, int(args[initial_index + 1])), 511)
+        z = min(max(0, int(args[initial_index + 2])),
+                connection.protocol.map.get_height(x, y) - 2)
+        position = '%d %d %d' % (x, y, z)
+    else:
+        raise ValueError('Wrong number of parameters!')
+    return x, y, z, position
+```
+We could also Encapsulate the logic that figures out whether the command is moving the caller or another player, including permission checks in the following way:
+``` python
+def _determine_target_player(connection, args, arg_count):
+    if arg_count in (1, 3):
+        # Moving self: ensure the connection represents a valid player.
+        if connection not in connection.protocol.players.values():
+            raise ValueError("Both player and target player are required")
+        return connection.name
+    elif argount in (2, 4):
+        # Moving another player: check permissions.
+        if not (connection.admin or connection.rights.move_others):
+            raise PermissionDenied("moving other players requires the move_others right")
+        return args[0]
+```
 - **`join_squad`:** (lines 161-223 in `./piqueserver/scripts/squad.py`)
 WRITE REFACTORING PLAN HERE
 
