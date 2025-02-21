@@ -10,7 +10,7 @@ This report documents our project details, the onboarding experience, complexity
 **URL:** *https://github.com/piqueserver/piqueserver*  
 
 **Description:**  
-A concise description of the project in one or two sentences that outlines its primary features and objectives.
+The repository we evaluated for this project seems to handle game logic for a game called Ace Of Spades.
 
 ---
 
