@@ -77,7 +77,7 @@ The on_chat method runs whenever a player sends a chat message. The method handl
 
 5. **Exceptions and Documentation:**  
    - Did it take into account exceptions? 
-   The tools did 
+   The manual coverage measurement tool we implemented relies on the user to add code to all the branches of the function so in a way it takes operations like ternary operators into account but it still relies on the user to add the needed code inside of the condition.
 
    - Is the documentation clear regarding possible outcomes: 
    The functions we worked with does not have any documentation apart from small comments in the code which do not provide a significant amount of information. The comments in the code are also NOT up to PEP-8 standard and are often just comment what a single line of code does.
@@ -102,7 +102,24 @@ WRITE REFACTORING PLAN HERE
 
 - **`on_spawn`:** (lines 251-286 in `./piqueserver/scripts/squad.py`)
 There are some parts of the `on_spawn` function which could be refactored and other which could be seperate to reduce complexity.
-You could, for example, create helper functions which for getting all the members of a squad or a helper function which returns all the living members of a squad. This would reduce code duplication for the function and therefore reduce the functions complexity in it whole.
+You could, for example, create a helper function for getting all the members of a squad `_get_all_members(self)`, or a helper function which returns all the living members of a squad `_get_live_members(self, members)`. You could also create a seperate function for squad messages, `_build_squad_message(self, members)`, because alot of the branches lies in generating these chat messages.This would reduce code duplication and complexity for the function and therefore reduce the functions cyclomatic complexity in it whole.
+Example code using helper functions:
+`def on_spawn(self, pos):`
+    `if self.squad:`
+        `all_members = self._get_all_members()`
+        `live_members = self._get_live_members(all_members)`
+        `message = self._build_squad_message(all_members)`
+        `if all_members:`
+            `self.send_chat('You are in squad %s with %s.' % (self.squad, message))`
+        `else:`
+            `self.send_chat('You are in squad %s, all alone.' % self.squad)`
+        `if (self.squad_pref is not None and self.squad_pref.hp and self.squad_pref.team is self.team and not self.squad_pref.invisible and not self.squad_pref.god):`
+            `self.set_location_safe(self.get_follow_location(self.squad_pref))`
+        `else:`
+            `if live_members:`
+                `self.set_location_safe(self.get_follow_location(random.choice(live_members)))`
+    `return connection.on_spawn(self, pos)`
+
 
 - **`on_chat`:** (lines 693-720 in `./piqueserver/scripts/markers.py`)
 WRITE REFACTORING PLAN HERE
@@ -117,7 +134,7 @@ WRITE REFACTORING PLAN HERE
 We first employed the `coverage.py` tool to measure branch coverage across our codebase.
 
 - **Documentation:**  
-  The tool is well-documented, though initially it was challenging to interpret the output. The results from the tool were hard to interpret before we realized that the tool, even with the branch flag set, would output branch and line coverage together. We therefore had to parse the output to only get the branch coverage since we are only interested in that.
+  The tool is well-documented, though initially it was challenging to interpret the output. The results from the tool were hard to interpret before we realized that the tool, even with the branch flag set, would output branch and line coverage together. We therefore had to parse the output to only get the branch coverage since we are only interested in that and we did this using a simple python script.
 
 - **How to run the tool**:
  We use Coverage.py, version 7.6.12 with C extension and Python 3.10.12
