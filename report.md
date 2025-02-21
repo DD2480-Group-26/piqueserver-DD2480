@@ -52,6 +52,7 @@ We analyzed several complex functions using both manual counts and the Lizard to
      - First function: **19**
      - Second function: **20**
      - Third function: **20**
+     - Fourth function: **16**
 
 3. **Observations:**
    - The tools vs. manual count did not get the same result for the functions. We have understood that it can differ a lot with how you implement the method of counting the cyclomatic complexity and even the formula varies between theories.
@@ -132,9 +133,9 @@ We first employed the `coverage.py` tool to measure branch coverage across our c
   - Coverage after adding tests: **94%**
 
 - **Fourth function**
-  - Branches:
-  - Coverage before addings tests: 
-  - Coverage after adding tests: 
+  - Branches: **12**
+  - Coverage before addings tests: **0** since tests did not exist. 
+  - Coverage after adding tests: **33%**
 
 
 ### Our Own Coverage Tool
@@ -155,9 +156,10 @@ We also developed a custom coverage tool that works as follows:
   - **Third function:**
     - Branches: 
     - Coverage after adding tests:: 
-  - **Second Function:**
-    - Branches: **16**
-    - Coverage after adding tests:: 13 out of 16 (~81%)
+
+  - **Fourth Function:**
+    - Branches: **9**
+    - Coverage after adding tests:: 
 
 
 ### Evaluation
