@@ -185,12 +185,7 @@ We also developed a custom coverage tool that works as follows:
 
 ## Self-assessment: Way of Working
 
-- **Current State:**  
-  Our current workflow is assessed according to the Essence standard.
-- **Team Assessment:**  
-  The self-assessment was conducted unanimously, though there remain minor uncertainties regarding some items.
-- **Areas for Improvement:**  
-  We identified potential improvements in documentation clarity, test coverage consistency, and overall team coordination.
+We are currently in the “In-place” state, which is an improvement compared to where we were in the last project and is unanimous. We are comfortable in our communication and conscious of what we can expect from one another. The potential for improvement could be to start the project earlier to not be in a rush when approaching the deadline.
 
 ---
 
