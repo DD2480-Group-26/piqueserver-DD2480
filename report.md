@@ -284,6 +284,7 @@ is a compound condition. Coverage.py counts the two operands separately (and the
     Both the old and the new coverage reports are generated using coverage.py because there were no implemented tests for our functions in the original repository.
   - [Old Coverage Report](link)
   - [New Coverage Report](https://dd2480-group-26.github.io/coverage-pages/branch_coverage_report.html)
+  - [Manual Coverage Report](https://dd2480-group-26.github.io/coverage-pages/branch_coverage_tool_tests.html)
 - **Test Cases Added:**  
   - Command used to view the patch: `git diff main..converage-tests`  
 
