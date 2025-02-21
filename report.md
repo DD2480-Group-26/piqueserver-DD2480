@@ -46,8 +46,8 @@ We analyzed several complex functions using both manual counts and the Lizard to
 2. **Measurement Results:**
 For each of our chosen function we peer-review the Cyclomatic Complexity count two and two.
    - **Manual Count:**
-     - *`do_move`:* Adam counted 17, Love counted 18
-     - *`join_squad`:* Love counted 20
+     - *`do_move`:* Both Adam and Love counted 18.
+     - *`join_squad`:* Both Love and Adam counted 17.
      - *`on_spawn`:* Both Filip and Robin counted 20.
      - *`on_chat`:* Both Robin and Filip counted 15.
    - **Lizard (Cyclomatic) Complexity:**
@@ -57,8 +57,19 @@ For each of our chosen function we peer-review the Cyclomatic Complexity count t
      - *`on_chat`:* **16**
 
 3. **Observations:**
-   - The tools vs. manual count did not get the same result for the functions. We have understood that it can differ a lot with how you implement the method of counting the cyclomatic complexity and even the formula varies between theories.
+  **Question 3.1**
+  ***What are your results for four complex functions?***
+   * Did all methods (tools vs. manual count) get the same result?
+   * Are the results clear?
 
+   - The tools vs. manual count did not get the same result for the functions. We have understood that it can differ a lot with how you implement the method of counting the cyclomatic complexity and even the formula varies between theories.We used the formula that was shown during the lecture of structural complexity which is defined thusly: 
+      `M = pi - s + 2`
+      `pi = number of decisions (if, while, and, or)`
+      `s = (throws, returns)`
+    According to the documentation of the lizard tool (https://pypi.org/project/lizard/) the way the cyclometric complexity is computed is mostly compatible with McCabe’s theory which gives us a different answer from us. 
+
+  **Question 3.2**
+  ***Are the functions just complex, or also long?***
    - In our case, the complex functions are also long. Although there is a correlation between complexity and length, the function’s purpose ultimately guides its design.
 
 4. **Function Purposes:**
@@ -104,21 +115,24 @@ WRITE REFACTORING PLAN HERE
 There are some parts of the `on_spawn` function which could be refactored and other which could be seperate to reduce complexity.
 You could, for example, create a helper function for getting all the members of a squad `_get_all_members(self)`, or a helper function which returns all the living members of a squad `_get_live_members(self, members)`. You could also create a seperate function for squad messages, `_build_squad_message(self, members)`, because alot of the branches lies in generating these chat messages.This would reduce code duplication and complexity for the function and therefore reduce the functions cyclomatic complexity in it whole.
 Example code using helper functions:
-`def on_spawn(self, pos):`
-    `if self.squad:`
-        `all_members = self._get_all_members()`
-        `live_members = self._get_live_members(all_members)`
-        `message = self._build_squad_message(all_members)`
-        `if all_members:`
-            `self.send_chat('You are in squad %s with %s.' % (self.squad, message))`
-        `else:`
-            `self.send_chat('You are in squad %s, all alone.' % self.squad)`
-        `if (self.squad_pref is not None and self.squad_pref.hp and self.squad_pref.team is self.team and not self.squad_pref.invisible and not self.squad_pref.god):`
-            `self.set_location_safe(self.get_follow_location(self.squad_pref))`
-        `else:`
-            `if live_members:`
-                `self.set_location_safe(self.get_follow_location(random.choice(live_members)))`
-    `return connection.on_spawn(self, pos)`
+```
+def on_spawn(self, pos):
+    if self.squad:
+        all_members = self._get_all_members()
+        live_members = self._get_live_members(all_members)
+        message = self._build_squad_message(all_members)
+        if all_members:
+            self.send_chat('You are in squad %s with %s.' % (self.squad, message))
+        else:
+            self.send_chat('You are in squad %s, all alone.' % self.squad)        
+        if (self.squad_pref is not None and self.squad_pref.hp and
+            self.squad_pref.team is self.team and not self.squad_pref.invisible and not self.squad_pref.god):
+            self.set_location_safe(self.get_follow_location(self.squad_pref))
+        else:
+            if live_members:
+                self.set_location_safe(self.get_follow_location(random.choice(live_members)))
+    return connection.on_spawn(self, pos)
+```
 
 
 - **`on_chat`:** (lines 693-720 in `./piqueserver/scripts/markers.py`)
