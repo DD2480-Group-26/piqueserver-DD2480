@@ -202,8 +202,8 @@ We first employed the `coverage.py` tool to measure branch coverage across our c
 - **Documentation:**  
   The tool is well-documented, though initially it was challenging to interpret the output. The results from the tool were hard to interpret before we realized that the tool, even with the branch flag set, would output branch and line coverage together. We therefore had to parse the output to only get the branch coverage since we are only interested in that and we did this using a simple python script.
 
-- **How to run the tool**:
- We use Coverage.py, version 7.6.12 with C extension and Python 3.10.12
+- **How to run the tool**:  
+  We use Coverage.py, version 7.6.12 with C extension and Python 3.10.12
   In the root of the repository run: 
   - coverage run --branch -m pytest
   Followed by: 
@@ -294,7 +294,7 @@ is a compound condition. Coverage.py counts the two operands separately (and the
   Our current workflow is assessed according to the Essence standard.
 - **Team Assessment:**  
   The self-assessment was conducted unanimously, though there remain minor uncertainties regarding some items.
-- **Areas for Improvement:**
+- **Areas for Improvement:**  
   We are currently in the “In-place” state, which is an improvement compared to where we were in the last project and is unanimous. We are comfortable in our communication and conscious of what we can expect from one another. The potential for improvement could be to start the project earlier to not be in a rush when approaching the deadline.                 
   We also identified potential improvements in documentation clarity, test coverage consistency, and overall team coordination.
 
