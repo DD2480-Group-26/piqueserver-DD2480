@@ -51,9 +51,9 @@ class TestChat(unittest.TestCase):
 
     def setUp(self):
         # Reset branch coverage dictionary for on_chat before each test.
-        from piqueserver.scripts.markers import branch_coverage_on_chat
-        for key in branch_coverage_on_chat:
-            branch_coverage_on_chat[key] = False
+        from piqueserver.scripts.markers import branch_hits_chat
+        for key in branch_hits_chat:
+            branch_hits_chat[key] = False
 
         # Create dummy protocol/connection objects.
         self.protocol = DummyProtocol()
