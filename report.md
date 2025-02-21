@@ -193,7 +193,7 @@ We first employed the `coverage.py` tool to measure branch coverage across our c
 We also developed a custom coverage tool that works as follows:
 
 - **Implementation:**  
-  A Python dictionary is used where branch IDs are keys set to `False` initially. When a branch is executed by the tests, its corresponding value is set to `True`. After test execution, the tool returns the dictionary, indicating which branches were covered. Our tool supports......
+  A Python dictionary is used where branch IDs are keys set to `False` initially. When a branch is executed by the tests, its corresponding value is set to `True`. After test execution, the tool returns the dictionary, indicating which branches were covered. 
 
 - **Results from Our Tool:**
   - **(`do_move`):** (lines 48-101 in `./piqueserver/core_commands/movement.py`)
