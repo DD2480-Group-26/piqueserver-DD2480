@@ -230,7 +230,7 @@ We first employed the `coverage.py` tool to measure branch coverage across our c
 - **`on_spawn`:**
   - Branches: **16**
   - Coverage before addings tests: **0%** since there were not tests for the function
-  - Coverage after adding tests: **FILL HERE**
+  - Coverage after adding tests: **100%**
 - **`on_chat`:**
   - Branches: **12**
   - Coverage before addings tests: **0%** since there were not tests for the function
@@ -255,7 +255,7 @@ We also developed a custom coverage tool that works as follows:
 
   - **(`on_spawn`):** (lines 251-286 in `./piqueserver/scripts/squad.py`)
     - Branches: **12**
-    - Coverage after adding tests: 8 out of 12 (~66%)
+    - Coverage after adding tests: 6 out of 12 (~50%)
 
   - **(`on_chat`):** (lines 693-720 in `./piqueserver/scripts/markers.py`)
     - Branches: **9**
