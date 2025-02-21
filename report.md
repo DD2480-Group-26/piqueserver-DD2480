@@ -278,8 +278,6 @@ is a compound condition. Coverage.py counts the two operands separately (and the
 
 ## Coverage Improvement
 
-- **Requirements for Improved Coverage:**  
-  Detailed comments have been added to describe the requirements for enhancing branch coverage.
 - **Reports:**
     Both the old and the new coverage reports are generated using coverage.py because there were no implemented tests for our functions in the original repository.
   - [Old Coverage Report](https://dd2480-group-26.github.io/coverage-pages/branch_coverage_tests_default.html)
@@ -293,13 +291,11 @@ is a compound condition. Coverage.py counts the two operands separately (and the
 
 ## Self-assessment: Way of Working
 
-- **Current State:**  
-  Our current workflow is assessed according to the Essence standard.
-- **Team Assessment:**  
-  The self-assessment was conducted unanimously, though there remain minor uncertainties regarding some items.
+
 - **Areas for Improvement:**  
   We are currently in the “In-place” state, which is an improvement compared to where we were in the last project and is unanimous. We are comfortable in our communication and conscious of what we can expect from one another. The potential for improvement could be to start the project earlier to not be in a rush when approaching the deadline.                 
   We also identified potential improvements in documentation clarity, test coverage consistency, and overall team coordination.
+  The self-assessment was conducted unanimously, though there remain minor uncertainties regarding some items.
 
 ---
 
