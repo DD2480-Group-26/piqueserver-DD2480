@@ -8,7 +8,14 @@ class DummyProtocol:
         self.allow_markers = True
 
 class DummyConnection:
-    pass
+    def on_spawn(self, pos):
+        return "base_spawn"
+    def on_team_changed(self, old_team):
+        return "team_changed"
+    def on_login(self, name):
+        return "login_called"
+    def on_chat(self, value, global_message):
+        return "chat_called"
 
 class DummyMarker:
     always_there = False
