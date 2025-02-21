@@ -118,7 +118,7 @@ WRITE REFACTORING PLAN HERE
 There are some parts of the `on_spawn` function which could be refactored and other which could be seperate to reduce complexity.
 You could, for example, create a helper function for getting all the members of a squad `_get_all_members(self)`, or a helper function which returns all the living members of a squad `_get_live_members(self, members)`. You could also create a seperate function for squad messages, `_build_squad_message(self, members)`, because alot of the branches lies in generating these chat messages.This would reduce code duplication and complexity for the function and therefore reduce the functions cyclomatic complexity in it whole.
 Example code using helper functions:
-```
+```python
 def on_spawn(self, pos):
     if self.squad:
         all_members = self._get_all_members()
