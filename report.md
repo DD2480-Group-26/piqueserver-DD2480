@@ -232,9 +232,9 @@ We first employed the `coverage.py` tool to measure branch coverage across our c
   - Coverage before addings tests: **0%** since there were not tests for the function
   - Coverage after adding tests: **FILL HERE**
 - **`on_chat`:**
-  - Branches:
+  - Branches: **12**
   - Coverage before addings tests: **0%** since there were not tests for the function
-  - Coverage after adding tests: 
+  - Coverage after adding tests: **50%**
 
 
 ### Our Own Coverage Tool
@@ -242,7 +242,7 @@ We first employed the `coverage.py` tool to measure branch coverage across our c
 We also developed a custom coverage tool that works as follows:
 
 - **Implementation:**  
-  A Python dictionary is used where branch IDs are keys set to `False` initially. When a branch is executed by the tests, its corresponding value is set to `True`. After test execution, the tool returns the dictionary, indicating which branches were covered. 
+  A Python dictionary is used where branch IDs are keys set to `False` initially. When a branch is executed by the tests, its corresponding value is set to `True`. After test execution, the tool returns the dictionary, indicating which branches were covered. Our tool supports......
 
 - **Results from Our Tool:**
   - **(`do_move`):** (lines 48-101 in `./piqueserver/core_commands/movement.py`)
@@ -258,8 +258,8 @@ We also developed a custom coverage tool that works as follows:
     - Coverage after adding tests: 8 out of 12 (~66%)
 
   - **(`on_chat`):** (lines 693-720 in `./piqueserver/scripts/markers.py`)
-    - Branches: 
-    - Coverage after adding tests: 
+    - Branches: **9**
+    - Coverage after adding tests: 5 out of 9 (~55%)
 
 
 ### Evaluation
