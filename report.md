@@ -57,20 +57,23 @@ For each of our chosen function we peer-review the Cyclomatic Complexity count t
      - *`on_chat`:* **16**
 
 3. **Observations:**
+
   **Question 3.1**
   ***What are your results for four complex functions?***
    * Did all methods (tools vs. manual count) get the same result?
    * Are the results clear?
 
-   - The tools vs. manual count did not get the same result for the functions. We have understood that it can differ a lot with how you implement the method of counting the cyclomatic complexity and even the formula varies between theories.We used the formula that was shown during the lecture of structural complexity which is defined thusly: 
-      `M = pi - s + 2`
-      `pi = number of decisions (if, while, and, or)`
-      `s = (throws, returns)`
-    According to the documentation of the lizard tool (https://pypi.org/project/lizard/) the way the cyclometric complexity is computed is mostly compatible with McCabe’s theory which gives us a different answer from us. 
+The tools vs. manual count did not get the same result for the functions. We have understood that it can differ a lot with how you implement the method of counting the cyclomatic complexity and even the formula varies between theories.We used the formula that was shown during the lecture of structural complexity which is defined thusly: 
+```
+      M = pi - s + 2
+      pi = number of decisions (if, while, and, or)
+      s = (throws, returns)
+```
+According to the documentation of the lizard tool (https://pypi.org/project/lizard/) the way the cyclometric complexity is computed is mostly compatible with McCabe’s theory which gives us a different answer from us. 
 
   **Question 3.2**
   ***Are the functions just complex, or also long?***
-   - In our case, the complex functions are also long. Although there is a correlation between complexity and length, the function’s purpose ultimately guides its design.
+In our case, the complex functions are also long. Although there is a correlation between complexity and length, the function’s purpose ultimately guides its design.
 
 4. **Function Purposes:**
 - **`do_move`:** (lines 48-101 in `./piqueserver/core_commands/movement.py`)
@@ -104,18 +107,67 @@ We plan to refactor the complex functions to reduce their cyclomatic complexity.
 - **Estimated Impact:**  
   Reducing complexity (and thus lowering the CC value) is expected to make the code easier to maintain. However, this might introduce other issues 
 
-- **Current Status:**  
+**Current Status:**  
 - **`do_move`:** (lines 48-101 in `./piqueserver/core_commands/movement.py`)
-WRITE REFACTORING PLAN HERE
-
+The function can be improved in a number of ways. In the function is there a significant amount of code for parsing the position. This can be moved to function like this 
+```python
+def _parse_target_position(connection, args, arg_count, initial_index):
+    if arg_count in (1, 2):
+        # The target is specified as a <sector>.
+        x, y = coordinates(args[initial_index])
+        x += 32
+        y += 32
+        z = connection.protocol.map.get_height(x, y) - 2
+        position = args[initial_index].upper()
+    elif arg_count in (3, 4):
+        # The target is specified as <x> <y> <z>.
+        x = min(max(0, int(args[initial_index])), 511)
+        y = min(max(0, int(args[initial_index + 1])), 511)
+        z = min(max(0, int(args[initial_index + 2])),
+                connection.protocol.map.get_height(x, y) - 2)
+        position = '%d %d %d' % (x, y, z)
+    else:
+        raise ValueError('Wrong number of parameters!')
+    return x, y, z, position
+```
+We could also Encapsulate the logic that figures out whether the command is moving the caller or another player, including permission checks in the following way:
+``` python
+def _determine_target_player(connection, args, arg_count):
+    if arg_count in (1, 3):
+        # Moving self: ensure the connection represents a valid player.
+        if connection not in connection.protocol.players.values():
+            raise ValueError("Both player and target player are required")
+        return connection.name
+    elif argount in (2, 4):
+        # Moving another player: check permissions.
+        if not (connection.admin or connection.rights.move_others):
+            raise PermissionDenied("moving other players requires the move_others right")
+        return args[0]
+```
 - **`join_squad`:** (lines 161-223 in `./piqueserver/scripts/squad.py`)
-WRITE REFACTORING PLAN HERE
+The function can be also improved in a number of ways. The code should be broken into more parts. The code for checking if a player is in a valid team should be added to a different function that we can define as:
+
+```python
+def _is_valid_team(self):
+    # Returns True if the player is on a valid team.
+    return self.team is not None and self.team is not self.protocol.spectator_team
+```
+The code for checking squad changes can also be separated out into a function which looks as follows:
+```python
+def _has_squad_changed(self, squad):
+    if squad is None or self.squad is None:
+        return self.squad is not squad
+    else:
+        # When both are provided, use a case-insensitive comparison.
+        return self.squad.lower() != squad.lower()
+```
+Doing these changes would make the code easier to maintain and understand.
 
 - **`on_spawn`:** (lines 251-286 in `./piqueserver/scripts/squad.py`)
 There are some parts of the `on_spawn` function which could be refactored and other which could be seperate to reduce complexity.
 You could, for example, create a helper function for getting all the members of a squad `_get_all_members(self)`, or a helper function which returns all the living members of a squad `_get_live_members(self, members)`. You could also create a seperate function for squad messages, `_build_squad_message(self, members)`, because alot of the branches lies in generating these chat messages.This would reduce code duplication and complexity for the function and therefore reduce the functions cyclomatic complexity in it whole.
 Example code using helper functions:
-```
+```python
 def on_spawn(self, pos):
     if self.squad:
         all_members = self._get_all_members()
@@ -150,8 +202,8 @@ We first employed the `coverage.py` tool to measure branch coverage across our c
 - **Documentation:**  
   The tool is well-documented, though initially it was challenging to interpret the output. The results from the tool were hard to interpret before we realized that the tool, even with the branch flag set, would output branch and line coverage together. We therefore had to parse the output to only get the branch coverage since we are only interested in that and we did this using a simple python script.
 
-- **How to run the tool**:
- We use Coverage.py, version 7.6.12 with C extension and Python 3.10.12
+- **How to run the tool**:  
+  We use Coverage.py, version 7.6.12 with C extension and Python 3.10.12
   In the root of the repository run: 
   - coverage run --branch -m pytest
   Followed by: 
@@ -178,11 +230,11 @@ We first employed the `coverage.py` tool to measure branch coverage across our c
 - **`on_spawn`:**
   - Branches: **16**
   - Coverage before addings tests: **0%** since there were not tests for the function
-  - Coverage after adding tests: **FILL HERE**
+  - Coverage after adding tests: **100%**
 - **`on_chat`:**
-  - Branches:
+  - Branches: **12**
   - Coverage before addings tests: **0%** since there were not tests for the function
-  - Coverage after adding tests: 
+  - Coverage after adding tests: **50%**
 
 
 ### Our Own Coverage Tool
@@ -190,7 +242,7 @@ We first employed the `coverage.py` tool to measure branch coverage across our c
 We also developed a custom coverage tool that works as follows:
 
 - **Implementation:**  
-  A Python dictionary is used where branch IDs are keys set to `False` initially. When a branch is executed by the tests, its corresponding value is set to `True`. After test execution, the tool returns the dictionary, indicating which branches were covered. Our tool supports......
+  A Python dictionary is used where branch IDs are keys set to `False` initially. When a branch is executed by the tests, its corresponding value is set to `True`. After test execution, the tool returns the dictionary, indicating which branches were covered.
 
 - **Results from Our Tool:**
   - **(`do_move`):** (lines 48-101 in `./piqueserver/core_commands/movement.py`)
@@ -203,22 +255,22 @@ We also developed a custom coverage tool that works as follows:
 
   - **(`on_spawn`):** (lines 251-286 in `./piqueserver/scripts/squad.py`)
     - Branches: **12**
-    - Coverage after adding tests: 8 out of 12 (~66%)
+    - Coverage after adding tests: 6 out of 12 (~50%)
 
   - **(`on_chat`):** (lines 693-720 in `./piqueserver/scripts/markers.py`)
-    - Branches: 
-    - Coverage after adding tests: 
+    - Branches: **9**
+    - Coverage after adding tests: 5 out of 9 (~55%)
 
 
 ### Evaluation
 
 1. **Detail Level:**  
-   The measurement is quite detailed, as we have inserted branch counters in each decision point.
+   Since we have inserted the “branch counters” in each branch of the functions the measurement is reasonably detailed.
 2. **Limitations:**  
-   Our tool is not dynamic and requires manual instrumentation for each function under test.
+   The limitation of our tool is that it is not dynamic. It must be done manually for each of the functions that you want to measure the coverage.
 3. **Consistency:**  
    The results for the second function differ between our tool and `coverage.py`. It is not consistent because Coverage.py counts every possible branch in the bytecode, including both outcomes of each condition and each sub-condition in compound expressions. In our manual instrumentation do we only consider branching due to if-statements and while-loops. Coverage does also handle  Another thing is that our tool does not capture implicit branches. An expression like:
-if self.team is None or self.team is self.protocol.spectator_team:
+    `if self.team is None or self.team is self.protocol.spectator_team:`
 is a compound condition. Coverage.py counts the two operands separately (and the implicit false outcome), so it can add more branches than you have instrumentation markers.
 
 
@@ -232,7 +284,7 @@ is a compound condition. Coverage.py counts the two operands separately (and the
   - [Old Coverage Report](link)
   - [New Coverage Report](link)
 - **Test Cases Added:**  
-  - Command used to view the patch: `git diff ...`  
+  - Command used to view the patch: `git diff main..converage-tests`  
 
 ---
 
@@ -243,7 +295,8 @@ is a compound condition. Coverage.py counts the two operands separately (and the
 - **Team Assessment:**  
   The self-assessment was conducted unanimously, though there remain minor uncertainties regarding some items.
 - **Areas for Improvement:**  
-  We identified potential improvements in documentation clarity, test coverage consistency, and overall team coordination.
+  We are currently in the “In-place” state, which is an improvement compared to where we were in the last project and is unanimous. We are comfortable in our communication and conscious of what we can expect from one another. The potential for improvement could be to start the project earlier to not be in a rush when approaching the deadline.                 
+  We also identified potential improvements in documentation clarity, test coverage consistency, and overall team coordination.
 
 ---
 
