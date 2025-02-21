@@ -38,21 +38,21 @@ The onboarding experience was not completely painless. The documentation is spli
 We analyzed several complex functions using both manual counts and the Lizard tool. Below is a summary of our findings:
 
 1. **Functions Selected for Analysis:**
-   - **Function 1:** `do_move` (lines 48-101 in `./core_commands/movement.py`)
-   - **Function 2:** `apply_script.join_squad` (lines 161-223 in `./piqueserver/piqueserver/scripts/squad.py`)
+   - **Function 1:** `do_move` (lines 48-101 in `./piqueserver/core_commands/movement.py`)
+   - **Function 2:** `apply_script.join_squad` (lines 161-223 in `./piqueserver/scripts/squad.py`)
    - **Function 3:** `apply_script.on_spawn` (lines 251-286 in `./piqueserver/scripts/squad.py`)
-   - **Function 4:**  `apply_script.on_chat` (lines 693-720 in `./scripts/markers.py`)
+   - **Function 4:**  `apply_script.on_chat` (lines 693-720 in `./piqueserver/scripts/markers.py`)
 
 2. **Measurement Results:**
    - **Manual Count:**
      - *First Function:* Adam counted 17,.
      - *Second Function:* Love’s count was 20.
      - *Third Function:* Both Filip and Robin counted 20.
+     - *Third Function:* Both Robin and Filip counted 15.
    - **Lizard (Cyclomatic) Complexity:**
      - First function: **19**
      - Second function: **20**
      - Third function: **20**
-     - Fourth function: **16**
 
 3. **Observations:**
    - The tools vs. manual count did not get the same result for the functions. We have understood that it can differ a lot with how you implement the method of counting the cyclomatic complexity and even the formula varies between theories.
@@ -60,14 +60,15 @@ We analyzed several complex functions using both manual counts and the Lizard to
    - In our case, the complex functions are also long. Although there is a correlation between complexity and length, the function’s purpose ultimately guides its design.
 
 4. **Function Purposes:**
-   - **`do_move`:**  
-     Moves a character within a 3D game environment.
-   - **`join_squad`:**  
+   - **Function 1:** **`do_move`:** (lines 48-101 in `./piqueserver/core_commands/movement.py`)
+
+Moves a character within a 3D game environment.
+   - **Function 2:** **`join_squad`:** (lines 161-223 in `./piqueserver/scripts/squad.py`)
 The purpose of the functions is to manage the process of a player joining or leaving a squad. It has a number of different checks. It verifies that a player can join a squad, It determines whether the player is actually trying to change their current squad or follow preference. It also checks that there is space in the squad and if a player joins a squad, removes the player from an existing squad, if applicable. It also notifies the other player of the squad change. Since the function does a lot of things is 
-   - **`on_spawn`:**  
+- **Function 3:** **`on_spawn`:** (lines 251-286 in `./piqueserver/scripts/squad.py`)
 The on_spawn function is a method that runs when a player spawns in the game. It seems one of its primary functions is handling squad-based spawning, ensuring that the player is near their squad members, and updating squad-related information like setting safe spawn locations.
 
-- **`on_chat`:**
+- **Function 4:** **`on_chat`:** (lines 693-720 in `./piqueserver/scripts/markers.py`)
 The on_chat method runs whenever a player sends a chat message. The method handles chat messages and determines whether they should trigger the placement of markers in the game based on if the message contains the command for that action. The method also ensures that markers are placement respects cooldowns, and it calculates appropriate positions for the markers placed.
 
 
@@ -82,7 +83,7 @@ The on_chat method runs whenever a player sends a chat message. The method handl
 
 ## Refactoring
 
-**Plan for Refactoring:**  
+**Plan for Refactoring:**
 We plan to refactor the complex functions to reduce their cyclomatic complexity. The aim is to improve maintainability while being mindful of any potential drawbacks, such as performance trade-offs.
 
 - **Estimated Impact:**  
@@ -128,14 +129,14 @@ We first employed the `coverage.py` tool to measure branch coverage across our c
   - Coverage before addings tests: **0%** since there were not tests for the function
   - Coverage after adding tests: **79.2%**
 - **Third Function:**
-  - Branches: **12**
+  - Branches: **16**
   - Coverage before addings tests: **0%** since there were not tests for the function
-  - Coverage after adding tests: **94%**
+  - Coverage after adding tests: **24%**
 
 - **Fourth function**
-  - Branches: **12**
-  - Coverage before addings tests: **0** since tests did not exist. 
-  - Coverage after adding tests: **33%**
+  - Branches:
+  - Coverage before addings tests: 
+  - Coverage after adding tests: 
 
 
 ### Our Own Coverage Tool
@@ -146,20 +147,21 @@ We also developed a custom coverage tool that works as follows:
   A Python dictionary is used where branch IDs are keys set to `False` initially. When a branch is executed by the tests, its corresponding value is set to `True`. After test execution, the tool returns the dictionary, indicating which branches were covered. Our tool supports......
 
 - **Results from Our Tool:**
-  - **First Function (`do_move`):**
+  - **First Function (`do_move`):** (lines 48-101 in `./piqueserver/core_commands/movement.py`)
+
     - Branches: **13**
     -  Coverage after adding tests:: 10 out of 13 (~77%)
-  - **Second Function:**
+  - **Second Function (`join_squad`):** (lines 161-223 in `./piqueserver/scripts/squad.py`)
     - Branches: **16**
     -  Coverage after adding tests:: 13 out of 16 (~81%)
 
-  - **Third function:**
-    - Branches: 
-    - Coverage after adding tests:: 
+  - **Third function (`on_spawn`):** (lines 251-286 in `./piqueserver/scripts/squad.py`)
+    - Branches: **12**
+    - Coverage after adding tests:: 8 out of 12 (66%)
 
-  - **Fourth Function:**
-    - Branches: **9**
-    - Coverage after adding tests:: 
+  - **Fourth Function (`on_chat`):** (lines 693-720 in `./piqueserver/scripts/markers.py`)
+    - Branches: 
+    - Coverage after adding tests::
 
 
 ### Evaluation
@@ -169,7 +171,10 @@ We also developed a custom coverage tool that works as follows:
 2. **Limitations:**  
    Our tool is not dynamic and requires manual instrumentation for each function under test.
 3. **Consistency:**  
-   The results for the second function differ between our tool and `coverage.py`. They differ because 
+   The results for the second function differ between our tool and `coverage.py`. It is not consistent because Coverage.py counts every possible branch in the bytecode, including both outcomes of each condition and each sub-condition in compound expressions. In our manual instrumentation do we only consider branching due to if-statements and while-loops. Coverage does also handle  Another thing is that our tool does not capture implicit branches. An expression like:
+if self.team is None or self.team is self.protocol.spectator_team:
+is a compound condition. Coverage.py counts the two operands separately (and the implicit false outcome), so it can add more branches than you have instrumentation markers.
+
 
 ---
 
