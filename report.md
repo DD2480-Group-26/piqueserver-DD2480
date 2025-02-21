@@ -57,20 +57,23 @@ For each of our chosen function we peer-review the Cyclomatic Complexity count t
      - *`on_chat`:* **16**
 
 3. **Observations:**
+
   **Question 3.1**
   ***What are your results for four complex functions?***
    * Did all methods (tools vs. manual count) get the same result?
    * Are the results clear?
 
-   - The tools vs. manual count did not get the same result for the functions. We have understood that it can differ a lot with how you implement the method of counting the cyclomatic complexity and even the formula varies between theories.We used the formula that was shown during the lecture of structural complexity which is defined thusly: 
-      `M = pi - s + 2`
-      `pi = number of decisions (if, while, and, or)`
-      `s = (throws, returns)`
-    According to the documentation of the lizard tool (https://pypi.org/project/lizard/) the way the cyclometric complexity is computed is mostly compatible with McCabe’s theory which gives us a different answer from us. 
+The tools vs. manual count did not get the same result for the functions. We have understood that it can differ a lot with how you implement the method of counting the cyclomatic complexity and even the formula varies between theories.We used the formula that was shown during the lecture of structural complexity which is defined thusly: 
+```
+      M = pi - s + 2
+      pi = number of decisions (if, while, and, or)
+      s = (throws, returns)
+```
+According to the documentation of the lizard tool (https://pypi.org/project/lizard/) the way the cyclometric complexity is computed is mostly compatible with McCabe’s theory which gives us a different answer from us. 
 
   **Question 3.2**
   ***Are the functions just complex, or also long?***
-   - In our case, the complex functions are also long. Although there is a correlation between complexity and length, the function’s purpose ultimately guides its design.
+In our case, the complex functions are also long. Although there is a correlation between complexity and length, the function’s purpose ultimately guides its design.
 
 4. **Function Purposes:**
 - **`do_move`:** (lines 48-101 in `./piqueserver/core_commands/movement.py`)
@@ -104,7 +107,7 @@ We plan to refactor the complex functions to reduce their cyclomatic complexity.
 - **Estimated Impact:**  
   Reducing complexity (and thus lowering the CC value) is expected to make the code easier to maintain. However, this might introduce other issues 
 
-- **Current Status:**  
+**Current Status:**  
 - **`do_move`:** (lines 48-101 in `./piqueserver/core_commands/movement.py`)
 WRITE REFACTORING PLAN HERE
 
