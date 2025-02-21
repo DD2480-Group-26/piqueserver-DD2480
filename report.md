@@ -281,6 +281,7 @@ is a compound condition. Coverage.py counts the two operands separately (and the
 - **Requirements for Improved Coverage:**  
   Detailed comments have been added to describe the requirements for enhancing branch coverage.
 - **Reports:**
+    Both the old and the new coverage reports are generated using coverage.py because there were no implemented tests for our functions in the original repository.
   - [Old Coverage Report](link)
   - [New Coverage Report](https://dd2480-group-26.github.io/coverage-pages/branch_coverage_report.html)
 - **Test Cases Added:**  
