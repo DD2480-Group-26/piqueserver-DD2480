@@ -186,7 +186,7 @@ is a compound condition. Coverage.py counts the two operands separately (and the
   - [Old Coverage Report](link)
   - [New Coverage Report](link)
 - **Test Cases Added:**  
-  - Command used to view the patch: `git diff ...`  
+  - Command used to view the patch: `git diff main..converage-tests`
 
 ---
 
