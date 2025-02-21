@@ -282,7 +282,7 @@ is a compound condition. Coverage.py counts the two operands separately (and the
   Detailed comments have been added to describe the requirements for enhancing branch coverage.
 - **Reports:**
     Both the old and the new coverage reports are generated using coverage.py because there were no implemented tests for our functions in the original repository.
-  - [Old Coverage Report](link)
+  - [Old Coverage Report](https://dd2480-group-26.github.io/coverage-pages/branch_coverage_tests_default.html)
   - [New Coverage Report](https://dd2480-group-26.github.io/coverage-pages/branch_coverage_report.html)
   - [Manual Coverage Report](https://dd2480-group-26.github.io/coverage-pages/branch_coverage_tool_tests.html)
   - The functions in the Manual Coverage Report which we added our manual tests to are: `do_move`, `apply_script.MarkerConnection.on_chat`, `apply_script.SquadConnection.join_squad`, and `apply_script.SquadConnection.on_spawn`.		 
