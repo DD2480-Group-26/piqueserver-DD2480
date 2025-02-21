@@ -282,7 +282,7 @@ is a compound condition. Coverage.py counts the two operands separately (and the
   Detailed comments have been added to describe the requirements for enhancing branch coverage.
 - **Reports:**
   - [Old Coverage Report](link)
-  - [New Coverage Report](link)
+  - [New Coverage Report](https://dd2480-group-26.github.io/coverage-pages/branch_coverage_report.html)
 - **Test Cases Added:**  
   - Command used to view the patch: `git diff main..converage-tests`  
 
