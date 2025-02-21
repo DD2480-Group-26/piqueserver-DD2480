@@ -54,7 +54,7 @@ For each of our chosen function we peer-review the Cyclomatic Complexity count t
      - *`do_move`:* **19**
      - *`join_squad`:* **20**
      - *`on_spawn`:* **20**
-     - *`on_chat`:* **FILL HERE**
+     - *`on_chat`:* **16**
 
 3. **Observations:**
    - The tools vs. manual count did not get the same result for the functions. We have understood that it can differ a lot with how you implement the method of counting the cyclomatic complexity and even the formula varies between theories.
@@ -122,7 +122,7 @@ Example code using helper functions:
 
 
 - **`on_chat`:** (lines 693-720 in `./piqueserver/scripts/markers.py`)
-WRITE REFACTORING PLAN HERE
+In `on_chat` you could reduce complexity by writing helper functions for determining whether marker is on cooldown, determining the marker location, and finding the matching marker class. This will reduce the complexity becuase a lot of logic is moved outside of the function by having helper functions (there will be less if-statements etc. in `on_chat`). You can also reduce complexity a lot by having early returns for when the helper functions return none or false. The early returns would increase the amount of returns which reduces complexity according to the formula `M = pi - s + 1`, where `s` is the amount of returns.
 
 ---
 
@@ -167,7 +167,7 @@ We first employed the `coverage.py` tool to measure branch coverage across our c
   - Coverage after adding tests: **FILL HERE**
 - **`on_chat`:**
   - Branches:
-  - Coverage before addings tests: 
+  - Coverage before addings tests: **0%** since there were not tests for the function
   - Coverage after adding tests: 
 
 
@@ -181,19 +181,19 @@ We also developed a custom coverage tool that works as follows:
 - **Results from Our Tool:**
   - **(`do_move`):** (lines 48-101 in `./piqueserver/core_commands/movement.py`)
     - Branches: **13**
-    -  Coverage after adding tests:: 10 out of 13 (~77%)
+    -  Coverage after adding tests: 10 out of 13 (~77%)
 
   - **(`join_squad`):** (lines 161-223 in `./piqueserver/scripts/squad.py`)
     - Branches: **16**
-    -  Coverage after adding tests:: 13 out of 16 (~81%)
+    -  Coverage after adding tests: 13 out of 16 (~81%)
 
   - **(`on_spawn`):** (lines 251-286 in `./piqueserver/scripts/squad.py`)
     - Branches: **12**
-    - Coverage after adding tests:: 8 out of 12 (~66%)
+    - Coverage after adding tests: 8 out of 12 (~66%)
 
   - **(`on_chat`):** (lines 693-720 in `./piqueserver/scripts/markers.py`)
     - Branches: 
-    - Coverage after adding tests::
+    - Coverage after adding tests: 
 
 
 ### Evaluation
