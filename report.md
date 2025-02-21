@@ -145,7 +145,23 @@ def _determine_target_player(connection, args, arg_count):
         return args[0]
 ```
 - **`join_squad`:** (lines 161-223 in `./piqueserver/scripts/squad.py`)
-WRITE REFACTORING PLAN HERE
+The function can be also improved in a number of ways. The code should be broken into more parts. The code for checking if a player is in a valid team should be added to a different function that we can define as:
+
+```python
+def _is_valid_team(self):
+    # Returns True if the player is on a valid team.
+    return self.team is not None and self.team is not self.protocol.spectator_team
+```
+The code for checking squad changes can also be separated out into a function which looks as follows:
+```python
+def _has_squad_changed(self, squad):
+    if squad is None or self.squad is None:
+        return self.squad is not squad
+    else:
+        # When both are provided, use a case-insensitive comparison.
+        return self.squad.lower() != squad.lower()
+```
+Doing these changes would make the code easier to maintain and understand.
 
 - **`on_spawn`:** (lines 251-286 in `./piqueserver/scripts/squad.py`)
 There are some parts of the `on_spawn` function which could be refactored and other which could be seperate to reduce complexity.
