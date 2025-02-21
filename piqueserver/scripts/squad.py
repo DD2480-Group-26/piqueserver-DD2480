@@ -178,7 +178,7 @@ def apply_script(protocol, connection, config):
             # unique squad, so check for squad size first
 
             existing = self.get_squad(self.team, squad)
-            squad = existing['name']  # fixes the case
+            squad = existing['name']
 
             if squad and (self.protocol.squad_size
                           <= len(existing['players'])):
