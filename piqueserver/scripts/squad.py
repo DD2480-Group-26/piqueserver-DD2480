@@ -93,6 +93,33 @@ def squad(self, squadkey=None):
     return self.join_squad(squad, squad_pref)
 
 
+
+# 
+# 
+#  Function for 
+
+branch_hits_squad = {
+    1 : False,
+    2 : False,
+    3 : False,
+    4 : False,
+    5 : False, 
+    6 : False,
+    7: False, 
+    8: False, 
+    9: False,
+    10: False, 
+    11: False,
+    12: False,
+    13: False, 
+    14: False,
+    15: False, 
+    16: False
+
+
+}
+
+
 def apply_script(protocol, connection, config):
     protocol.squad_respawn_time = RESPAWN_TIME_OPTION.get()
     protocol.squad_size = SIZE_OPTION.get()
@@ -158,30 +185,37 @@ def apply_script(protocol, connection, config):
             else:
                 return random.choice(unused)
 
+        """
+        The function we use for testing of the 
+        """
         def join_squad(self, squad, squad_pref):
 
             if self.team is None or \
                self.team is self.protocol.spectator_team:
+                branch_hits_squad[1] = True
                 return
 
             # same-squad check
-
             if squad is None or self.squad is None:
+                branch_hits_squad[2] = True
                 newsquad = self.squad is not squad
             else:
+                branch_hits_squad[3] = True
                 newsquad = self.squad.lower() != squad.lower()
             newpref = self.squad_pref is not squad_pref
 
             if not newsquad and not newpref:
+                branch_hits_squad[4] = True
                 return 'Squad unchanged.'
 
             # unique squad, so check for squad size first
 
             existing = self.get_squad(self.team, squad)
-            squad = existing['name']
+            squad = existing['name']  # fixes the case
 
             if squad and (self.protocol.squad_size
                           <= len(existing['players'])):
+                branch_hits_squad[5] = True
                 return ('Squad %s is full. (limit %s)' %
                         (squad, self.protocol.squad_size))
 
@@ -191,6 +225,8 @@ def apply_script(protocol, connection, config):
             oldpref = self.squad_pref
 
             if newsquad and self.squad:
+                branch_hits_squad[6] = True
+
                 self.leave_squad()
 
             self.squad = squad
@@ -199,28 +235,47 @@ def apply_script(protocol, connection, config):
             if newsquad and squad:
                 self.squad_broadcast('%s joined your squad.' %
                                      self.name)
+                branch_hits_squad[7] = True
+
 
             if squad is None:
+                branch_hits_squad[8] = True
                 self.respawn_time = self.protocol.respawn_time
                 self.squad_pref = None
                 self.send_chat('You are no longer assigned to a squad.')
             else:
+                branch_hits_squad[9] = True
+
                 self.respawn_time = self.protocol.squad_respawn_time
                 if newpref and newsquad:
+                    branch_hits_squad[10] = True
+
                     if squad_pref is None:
+                        branch_hits_squad[11] = True
+
                         return ('You are now in squad %s.' % squad)
                     else:
+                        branch_hits_squad[12] = True
+
                         return ('You are now in squad %s, following %s.' %
                                 (squad, squad_pref.name))
                 elif newpref:
+                    branch_hits_squad[13] = True
+
                     if squad_pref is None:
+                        branch_hits_squad[14] = True
+
                         return ('You are no longer following %s.' %
                                 oldpref.name)
                     else:
+                        branch_hits_squad[15] = True
+
                         return ('You are now following %s.' %
                                 squad_pref.name)
                 elif newsquad:
+                    branch_hits_squad[16] = True
                     return 'You are now in squad %s.' % squad
+                    
 
         def leave_squad(self):
             if self.squad:
