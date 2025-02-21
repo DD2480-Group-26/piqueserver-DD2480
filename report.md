@@ -6,12 +6,11 @@ This report documents our project details, the onboarding experience, complexity
 
 ## Project
 
-**Name:** *[Your Project Name]*  
-**URL:** *[Your Project URL]*  
+**Name:** *piqueserver*  
+**URL:** *(https://github.com/piqueserver/piqueserver)*  
 
 **Description:**  
-A concise description of the project in one or two sentences that outlines its primary features and objectives.
-
+The code is a simple server for running the game Ace of Spades
 ---
 
 ## Onboarding Experience
@@ -45,16 +44,23 @@ We analyzed several complex functions using both manual counts and the Lizard to
 
 2. **Measurement Results:**
    - **Manual Count:**
-     - *First Function:* Adam counted 17,.
-     - *Second Function:* Love’s count was 20.
-     - *Third Function:* Both Filip and Robin counted 20.
+     - *First Function:* Adam counted 17, Count by Love:  18
+     - *Second Function:* Love’s count was 17, Count by Adam: 17
+     - *Third Function:* Count by Filip: 20	Count by Robin: 20
+     - *Fourth function*  Count by Robin: 15   Count by Filip: 15
    - **Lizard (Cyclomatic) Complexity:**
      - First function: **19**
      - Second function: **20**
      - Third function: **20**
+     - Fourth function: **16**
 
 3. **Observations:**
-   - The tools vs. manual count did not get the same result for the functions. We have understood that it can differ a lot with how you implement the method of counting the cyclomatic complexity and even the formula varies between theories.
+   - The tools vs. manual count did not get the same result for the functions. We have understood that it can differ a lot with how you implement the method of counting the cyclomatic complexity and even the formula varies between theories. We used the formula that was shown during the lecture of structural complexity which is defined thusly: 
+	- M = pi - s + 2
+	- pi = number of decisions (if, while, and, or)
+	- s = (throws, returns)
+According to the documentation of the lizard tool (source) the way the cyclometric complexity is computed is mostly compatible with McCabe’s theory which gives us a different answer from us. 
+
 
    - In our case, the complex functions are also long. Although there is a correlation between complexity and length, the function’s purpose ultimately guides its design.
 
@@ -72,7 +78,10 @@ The on_chat method runs whenever a player sends a chat message. The method handl
 
 5. **Exceptions and Documentation:**  
    - Did it take into account exceptions? 
-   The tools did 
+   Exceptions are taken into account using our own tool as “s” in the formula stated above.
+   The lizard tool for python does only look for  'if', 'for', 'while', 'and', 'or',
+    'elif', 'except', 'finally' so it probably handles exceptions, but we could not find any mention of it in the documentation. 
+ 
 
    - Is the documentation clear regarding possible outcomes: The second function does not have any documentation apart from small comments in the code which do not provide a significant amount of information.
 
